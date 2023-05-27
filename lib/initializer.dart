@@ -14,6 +14,7 @@ class Initializer {
     _initGlobalLoading();
     await _initBinding();
   }
+
   /// local storage
   static Future<void> _initStorage() async {
     await GetStorage.init();
@@ -57,9 +58,6 @@ class Initializer {
 
   /// initialBindings
   Future _initBinding() async {
-    var locationServiceController=Get.put(
-      LocationServiceController(),
-    );
-    await locationServiceController.getLocationPermission();
+    Get.put(LocationServiceController());
   }
 }

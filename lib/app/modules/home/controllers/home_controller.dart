@@ -27,11 +27,29 @@ class HomeController extends GetxController {
     super.onInit();
   }
 
-  void _getAllData() {
+  void _getAllData() async {
     _getTempUnit();
-    getCurrentWeather();
-    getHourlyWeather();
-    getDailyWeather();
+    CurrentWeatherUIModel? localCurrentWeather =
+    weatherDatabase.getCurrentWeather();
+
+    if (localCurrentWeather != null) {
+      currentWeather = localCurrentWeather;
+    }
+
+    update(['current']);
+    LocationServiceController locationServiceController = Get.find();
+
+    LatLng location = await locationServiceController.determinePosition();
+    getCurrentWeather(location: location);
+    getHourlyWeather(location: location);
+    getDailyWeather(location: location);
+  }
+
+
+  void searchLocation({required double lat, required double lon}) {
+    getCurrentWeather(location: LatLng(lat, lon));
+    getHourlyWeather(location: LatLng(lat, lon));
+    getDailyWeather(location: LatLng(lat, lon));
   }
 
   void changeTempUnit({required String unit}) async {
@@ -42,7 +60,7 @@ class HomeController extends GetxController {
   }
 
   void _getTempUnit() {
-    tempUnit.value = weatherDatabase.getTempUnit() ?? 'C';
+    tempUnit.value = weatherDatabase.getTempUnit() ?? 'M';
   }
 
   RxString tempUnit = 'C'.obs;
@@ -51,7 +69,7 @@ class HomeController extends GetxController {
   List<DetailsUiModel> detailsItem = [];
   bool loadingCurrentWeather = true;
 
-  void getCurrentWeather() async {
+  void getCurrentWeather({required LatLng location}) async {
     try {
       loadingCurrentWeather = true;
       CurrentWeatherUIModel? localCurrentWeather =
@@ -62,9 +80,7 @@ class HomeController extends GetxController {
       }
 
       update(['current']);
-      LocationServiceController locationServiceController = Get.find();
 
-      LatLng location = await locationServiceController.determinePosition();
       WeatherDto dto = WeatherDto(
         key: ConfigEnvironments.apiKey,
         latitude: location.latitude,
@@ -125,13 +141,10 @@ class HomeController extends GetxController {
   bool loadingDailyWeather = true;
   List<DailyWeatherUIModel> dailyWeather = [];
 
-  void getHourlyWeather() async {
+  void getHourlyWeather({required LatLng location}) async {
     try {
       loadingHourlyWeather = true;
       update(['hourly']);
-      LocationServiceController locationServiceController = Get.find();
-
-      LatLng location = await locationServiceController.determinePosition();
       WeatherDto dto = WeatherDto(
         key: ConfigEnvironments.apiKey,
         latitude: location.latitude,
@@ -158,7 +171,7 @@ class HomeController extends GetxController {
   RxDouble todayMaxTemp = 0.0.obs;
   RxDouble todayMinTemp = 0.0.obs;
 
-  void getDailyWeather() async {
+  void getDailyWeather({required LatLng location}) async {
     try {
       loadingDailyWeather = true;
       update(['daily']);
@@ -167,9 +180,7 @@ class HomeController extends GetxController {
       todayMaxTemp.value = 0.0;
       todayMinTemp.value = 0.0;
       this.dailyWeather.clear();
-      LocationServiceController locationServiceController = Get.find();
 
-      LatLng location = await locationServiceController.determinePosition();
       WeatherDto dto = WeatherDto(
         key: ConfigEnvironments.apiKey,
         latitude: location.latitude,

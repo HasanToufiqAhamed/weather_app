@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:weather_app_op/app/routes/app_pages.dart';
 
+import '../../../global_controller/location.controller.dart';
+
 class SplashController extends GetxController {
   PageController pageViewController = PageController(initialPage: 0);
 
@@ -21,9 +23,10 @@ class SplashController extends GetxController {
   }
 
   void _changeWeather() async {
+    await 500.milliseconds.delay();
     for (int a = 0; a != images.length + 1; a++) {
       if (a == images.length) {
-        Get.offAllNamed(Routes.HOME);
+        _navigateToHome();
         return;
       }
       await 400.milliseconds.delay();
@@ -32,6 +35,22 @@ class SplashController extends GetxController {
         duration: const Duration(milliseconds: 300),
         curve: Curves.easeIn,
       );
+    }
+  }
+
+  RxBool retry = false.obs;
+
+  void retryPermission(){
+    _navigateToHome();
+  }
+
+  void _navigateToHome() async {
+    LocationServiceController locationServiceController = Get.find();
+    bool result = await locationServiceController.getLocationPermission();
+    if (result) {
+      Get.offAllNamed(Routes.HOME);
+    } else {
+      retry.value = true;
     }
   }
 }

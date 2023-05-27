@@ -21,7 +21,7 @@ class HomeWidget extends StatelessWidget {
     return Container(
       decoration: BoxDecoration(
         borderRadius: AppDimens.primaryRadius.circularRadius,
-        color: Colors.black26,
+        color: Colors.white.withOpacity(0.06),
       ),
       child: Column(
         mainAxisAlignment: MainAxisAlignment.start,

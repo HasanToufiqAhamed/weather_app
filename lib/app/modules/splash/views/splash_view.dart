@@ -12,15 +12,21 @@ class SplashView extends GetView<SplashController> {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: CupertinoColors.activeBlue,
+      floatingActionButton: Obx(() {
+        if (controller.retry.value) {
+          return FloatingActionButton(onPressed: () {});
+        }
+        return const SizedBox();
+      }),
       body: PageView.builder(
         scrollDirection: Axis.horizontal,
         itemCount: controller.images.length,
         controller: controller.pageViewController,
         scrollBehavior: CupertinoScrollBehavior(),
         itemBuilder: (context, index) {
-          String image=controller.images[index];
+          String image = controller.images[index];
           return Padding(
-            padding: EdgeInsets.symmetric(horizontal: Get.width/4),
+            padding: EdgeInsets.symmetric(horizontal: Get.width / 4),
             child: SizedBox(
               width: Get.width,
               child: Image.asset(image),

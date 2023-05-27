@@ -10,7 +10,7 @@ class Environments {
 class ConfigEnvironments {
   static const String currentEnvironments = Environments.DEV;
   static const LatLng offLocation = LatLng(0, 0);
-  static const String apiKey = 'XXX';
+  static const String apiKey = 'xxxxxxxxxxx';
   static final List<Map<String, String>> _availableEnvironments = [
     {
       'env': Environments.LOCAL,
